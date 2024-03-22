@@ -25,8 +25,6 @@ def client(host="localhost", port=8082):
             + "Any input that is not on the list will disconnect.\n"
         )
         message = input("Select the number: ")
-        print(type(message))
-        print(message)
         if message in ["1", "2", "3"]:
             print(f"Sending input: {message}")
             sock.sendall(message.encode("utf-8"))

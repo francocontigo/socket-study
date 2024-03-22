@@ -24,13 +24,6 @@ def server(host="localhost", port=8082):
     # Listen to clients, argument specifies the max no. of queued connections
     sock.listen(5)
     while True:
-        # print(
-        #         "Select a server function: \n" +
-        #         "(1) To show current DateTime;\n" +
-        #         "(2) Return a random number 0-100;\n" +
-        #         "(3) Current temperature in Caçador - SC.\n" +
-        #         "(Any input not on the list will disconnect.)\n"
-        #     )
         print("Waiting to receive message from client.")
         client, address = sock.accept()
         try:
