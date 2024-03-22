@@ -1,9 +1,11 @@
 import socket
+from datetime import datetime
+from random import randrange
+import requests
+from dotenv import load_dotenv
+import os
 
-# TODO: Modificar loop while(3 chamadas não faz sentido bixo) ConnectionRefusedError: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente
-# TODO: Modificar mensagem
-# TODO: Método de saida do terminal(control C não ta funcionando)
-# TODO: adicionar ping no corpo da resposta
+load_dotenv()
 
 DATA_PAYLOAD = 4096  # The maximum amount of data to be received at once, mb 1024
 
@@ -38,17 +40,50 @@ def server(host="localhost", port=8082):
                 if decoded_data == "0":
                     print("Received '0'. Closing connection.")
                     break
-                elif decoded_data in ["1", "2", "3"]:
-                    print(decoded_data)
-                    print(type(decoded_data))
-                    print(f"Data: {data}")
-                    client.send(data)
+                elif decoded_data == "1":
+                    print(f"`Function: {decoded_data}`")
+                    date_result = datetime.now()
+                    result = date_result.strftime("%d/%m/%Y %H:%M")
+                    print(f"Result: {result}")
+                    client.send(result.encode("utf-8"))
+                    print()
+                elif decoded_data == "2":
+                    print(f"`Function: {decoded_data}`")
+                    result = str(randrange(1, 100))
+                    print(f"Result: {result}")
+                    client.send(result.encode("utf-8"))
+                    print()
+                elif decoded_data == "3":
+                    print(f"`Function: {decoded_data}`")
+                    city = "Caçador"
+                    state = "Santa Catarina"
+                    country = "Brazil"
+                    temp_result = get_current_temperature(city, state, country)
+                    result = str(temp_result)
+                    print(f"Result: {result}")
+                    client.send(result.encode("utf-8"))
+                    print()
                 else:
                     break
 
         except Exception as e:
             print(f"An error occurred: {e}")
             client.close()
+
+
+def get_current_temperature(city, state, country):
+    api_key = os.getenv("OPENWEATHERMAP_API_KEY")
+    base_url = "http://api.openweathermap.org/data/2.5/weather?"
+    query = f"{city},{state},{country}"
+    complete_url = f"{base_url}q={query}&appid={api_key}&units=metric"
+    response = requests.get(complete_url)
+    data = response.json()
+    if data["cod"] != "404":
+        main = data["main"]
+        current_temperature = main["temp"]
+        return current_temperature
+    else:
+        return "City not found"
 
 
 server()
