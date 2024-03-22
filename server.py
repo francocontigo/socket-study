@@ -21,27 +21,34 @@ def server(host="localhost", port=8082):
     sock.bind(server_address)
     # Listen to clients, argument specifies the max no. of queued connections
     sock.listen(5)
-    i = 0
     while True:
         # print(
-        #         "Select a server function: \n" + 
-        #         "(1) To show current DateTime;\n" + 
+        #         "Select a server function: \n" +
+        #         "(1) To show current DateTime;\n" +
         #         "(2) Return a random number 0-100;\n" +
         #         "(3) Current temperature in Caçador - SC.\n" +
         #         "(Any input not on the list will disconnect.)\n"
         #     )
         print("Waiting to receive message from client.")
         client, address = sock.accept()
-        data = client.recv(DATA_PAYLOAD)
-        if data:
-            print(f"Data: {data}")
-            client.send(data)
-            print(f"sent {data} bytes back to {address}")
-            # end connection
+        try:
+            while True:
+                data = client.recv(DATA_PAYLOAD)
+                decoded_data = data.decode("utf-8")
+                if decoded_data == "0":
+                    print("Received '0'. Closing connection.")
+                    break
+                elif decoded_data in ["1", "2", "3"]:
+                    print(decoded_data)
+                    print(type(decoded_data))
+                    print(f"Data: {data}")
+                    client.send(data)
+                else:
+                    break
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
             client.close()
-            i += 1
-            if i >= 3:
-                break
 
 
 server()
