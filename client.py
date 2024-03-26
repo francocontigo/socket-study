@@ -1,10 +1,18 @@
 import socket
 import time
 
-DATA_PAYLOAD = 4096  # The maximum amount of data to be received at once, mb 1024
+# The maximum amount of data to be received at once
+DATA_PAYLOAD = 4096
 
 
 def client(host="localhost", port=8082):
+    """
+    Connects to a server and interacts with it based on user input.
+
+    Args:
+        host (str): The hostname or IP address of the server. Defaults to 'localhost'.
+        port (int): The port number of the server. Defaults to 8082.
+    """
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Connect the socket to the server
@@ -15,7 +23,8 @@ def client(host="localhost", port=8082):
     start_time = time.time()
     sock.connect(server_address)
     end_time = time.time()
-    # Send data
+
+    # Send data and receive responses
     while True:
         print(
             "Select a server function: \n"
@@ -28,6 +37,7 @@ def client(host="localhost", port=8082):
         if message in ["1", "2", "3"]:
             print(f"Sending input: {message}")
             sock.sendall(message.encode("utf-8"))
+
             # Look for the response
             amount_received = 0
             amount_expected = len(message)

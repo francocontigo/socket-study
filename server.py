@@ -1,16 +1,21 @@
 import socket
+import os
+import requests
 from datetime import datetime
 from random import randrange
-import requests
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
-
-DATA_PAYLOAD = 4096  # The maximum amount of data to be received at once, mb 1024
+# Constant defining the maximum size of data payload
+DATA_PAYLOAD = 1024
 
 
 def server(host="localhost", port=8082):
+    """
+    Initialize a server that listens for incoming connections and responds to specific requests.
+
+    Args:
+        host (str): The hostname or IP address to bind the server to. Defaults to 'localhost'.
+        port (int): The port number to bind the server to. Defaults to 8082.
+    """
     # Create a TCP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Enable reuse address/port
@@ -65,6 +70,17 @@ def server(host="localhost", port=8082):
 
 
 def get_current_temperature(city, state, country):
+    """
+    Retrieve the current temperature of a specified location using the OpenWeatherMap API.
+
+    Args:
+        city (str): The name of the city.
+        state (str): The name of the state or region.
+        country (str): The name of the country.
+
+    Returns:
+        float or str: The current temperature in Celsius if available, or "City not found" if the city is not found.
+    """
     api_key = os.getenv("OPENWEATHERMAP_API_KEY")
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
     query = f"{city},{state},{country}"
@@ -79,4 +95,5 @@ def get_current_temperature(city, state, country):
         return "City not found"
 
 
+# Start the server
 server()
