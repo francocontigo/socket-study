@@ -25,10 +25,8 @@ def server(host="localhost", port=8082):
     # Enable reuse address/port
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # Bind the socket to the port
-    server_host = host
-    server_port = port
-    server_address = (server_host, server_port)
-    print(f"Starting up server on {server_host} port {server_port}")
+    server_address = (host, port)
+    print(f"Starting up server on {host} port {port}")
     sock.bind(server_address)
     # Listen to clients, argument specifies the max no. of queued connections
     sock.listen(5)
