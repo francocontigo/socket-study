@@ -1,8 +1,12 @@
 import socket
-import os
-import requests
 from datetime import datetime
 from random import randrange
+import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 
 # Constant defining the maximum size of data payload
 DATA_PAYLOAD = 1024
